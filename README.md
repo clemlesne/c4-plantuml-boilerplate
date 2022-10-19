@@ -25,7 +25,7 @@ Documentation:
 1. Install PlantUML dependency with `brew install graphviz` ([MacOS](https://github.com/Homebrew/brew)), `winget install graphviz` ([Windows](https://github.com/microsoft/winget-cli)), `yum install graphviz` (Linux Fedora), `apt install graphviz` (Linux Debian-based)
 2. Confirm [dot](https://graphviz.org/docs/layouts/dot) is installed on your PATH with `dot --version`
 
-### Test
+## Test
 
 Documentation:
 
