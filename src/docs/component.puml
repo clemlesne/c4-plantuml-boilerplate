@@ -1,0 +1,39 @@
+@startuml component
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/v2.4.0/C4_Component.puml
+
+title Component diagram (C4 model)
+
+AddRelTag("async", $lineStyle=DashedLine())
+
+Container(singlepageapp, "Single-page application", "JavaScript and Angular", "Provides all of the internet banking functionality to customers via trheir web browser")
+Container(mobileapp, "Mobile application", "Xamarin", "Provides a limited subset of the internet banking functionalities to customers via their mobile device")
+ContainerDb(db, "Database", "PostgreSQL", "Stores user registration information, hashed authentication credentiels, access logs, etc")
+
+Container_Boundary(apiapp, "API application") {
+  Component(signincontroller, "Sign-in controller", "Spring MVC REST Controller", "Allows users to sign in to the internet banking system")
+  Component(resetpasswordcontroller, "Reset password controller", "Spring MVC REST Controller", "Allows users to reset their passwords with a single use URL")
+  Component(accountssummarycontroller, "Accounts summary controller", "Spring MVC REST Controller", "Provides customers with a summary of their bank accounts")
+  Component(securitycomponent, "Security component", "Spring Bean", "Provides functionalitv related to signing in, changing passwords, ...")
+  Component(emailcomponent, "E-mail component", "Spring Bean", "Sends e-mails to users")
+  Component(mainframefacade, "Mainframe banking system facade", "Spring Bean", "A facade onto the mainframe banking system")
+}
+
+System_Ext(email, "E-mail system", "The internal Microsoft Exchange e-mail system")
+System_Ext(mainframe, "Mainframe banking system", "Stores all of the core banking information about customers, accounts, transactions, ...")
+
+Rel(singlepageapp, signincontroller, "Makes API calls", "JSON/HTTPS", $tags="async")
+Rel(singlepageapp, resetpasswordcontroller, "Makes API calls", "JSON/HTTPS", $tags="async")
+Rel(singlepageapp, accountssummarycontroller, "Makes API calls", "JSON/HTTPS", $tags="async")
+Rel(mobileapp, signincontroller, "Makes API calls", "JSON/HTTPS", $tags="async")
+Rel(mobileapp, resetpasswordcontroller, "Makes API calls", "JSON/HTTPS", $tags="async")
+Rel(mobileapp, accountssummarycontroller, "Makes API calls", "JSON/HTTPS", $tags="async")
+Rel(signincontroller, securitycomponent, "Uses", $tags="async")
+Rel(resetpasswordcontroller, securitycomponent, "Uses", $tags="async")
+Rel(resetpasswordcontroller, emailcomponent, "Uses", $tags="async")
+Rel(accountssummarycontroller, mainframe, "Uses")
+Rel(securitycomponent, db, "Reads and writes", "JDBC")
+Rel(mainframefacade, mainframe, "Makes API calls", "XML/HTTPS")
+Rel(emailcomponent, email, "Sends e-mail")
+
+@enduml

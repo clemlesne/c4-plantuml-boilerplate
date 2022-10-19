@@ -1,0 +1,32 @@
+@startuml container
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/v2.4.0/C4_Container.puml
+
+title Container diagram (C4 model)
+
+AddRelTag("async", $lineStyle=DashedLine())
+
+Person(customer, "Perosnal banking customer", "A customer of the bank, with personal bank accounts")
+
+System_Boundary(bank, "Internet banking system") {
+  Container(webapp, "Web application", "Java and Spring MVC", "Delivers the static content and the internet banking single page appplication")
+  Container(singlepageapp, "Single-page application", "JavaScript and Angular", "Provides all of the internet banking functionality to customers via trheir web browser")
+  Container(mobileapp, "Mobile application", "Xamarin", "Provides a limited subset of the internet banking functionalities to customers via their mobile device")
+  Container(apiapp, "API application", "Java and Spring MVC", "Provides internet banking functionality via JSON/HTTPS APIs")
+  ContainerDb(db, "Database", "PostgreSQL", "Stores user registration information, hashed authentication credentiels, access logs, etc")
+}
+
+System_Ext(email, "E-mail system", "The internal Microsoft Exchange e-mail system")
+System_Ext(mainframe, "Mainframe banking system", "Stores all of the core banking information about customers, accounts, transactions, ...")
+
+Rel(customer, webapp, "Visits bigbank.com/ib", "HTTPS", $tags="async")
+Rel(customer, singlepageapp, "View account balances, and makes payments", $tags="async")
+Rel(customer, mobileapp, "View account balances, and makes payments", $tags="async")
+Rel(singlepageapp, apiapp, "Makes API calls", "JSON/HTTPS")
+Rel(mobileapp, apiapp, "Makes API calls", "JSON/HTTPS", $tags="async")
+Rel(apiapp, db, "Reads and writes", "JDBC", $tags="async")
+Rel(apiapp, mainframe, "Makes API calls", "XML/HTTPS", $tags="async")
+Rel(apiapp, email, "Sends e-mail", $tags="async")
+Rel(email, customer, "Sends e-mail", $tags="async")
+
+@enduml
